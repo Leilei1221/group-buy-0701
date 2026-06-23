@@ -30,8 +30,7 @@ const PRODUCT_LIST = [
   { id: 'a24', name: '美人配方 家庭號', price: 289 },
   { id: 'a25', name: '養生配方 家庭號', price: 289 },
   { id: 'a26', name: '活力配方 家庭號', price: 289 },
-  { id: 'b01', name: '日本青森純榨蘋果汁 12入', price: 2299 },
-  { id: 'b02', name: '日本青森純榨蘋果汁 6入', price: 1259 },
+  { id: 'b02', name: '日本青森純榨蘋果汁（單瓶）', price: 210 },
   { id: 'c01', name: 'WONDER 超輕量製冷手持高速扇 WH-FU37', price: 499 },
 ];
 
