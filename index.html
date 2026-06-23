@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幾隻貓團購 0701</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f5f9f1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #333; padding-bottom: 90px; }
+
+  /* 頂部標題 */
+  .top-header {
+    background: #2e6b3e;
+    color: #fff;
+    text-align: center;
+    padding: 18px 16px 14px;
+  }
+  .top-header h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+  .top-header p { font-size: 0.85rem; opacity: 0.9; }
+
+  /* 倒數計時器 */
+  .countdown-bar {
+    background: #1a4a28;
+    color: #fff;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  .countdown-bar span { font-weight: 700; font-size: 1.05rem; color: #a8e6b8; }
+  .countdown-bar.ended { background: #7f1d1d; }
+
+  /* 免運提示 */
+  .free-shipping {
+    background: #5aaa5c;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* 大 section */
+  .section { margin: 16px 12px; }
+  .section-header {
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 10px 10px 0 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .section-header.algae { background: #2e6b3e; }
+  .section-header.apple { background: #c0392b; }
+  .section-header.fan   { background: #2980b9; }
+
+  .section-body {
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+    padding: 14px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+
+  /* subsection */
+  .subsection { margin-bottom: 18px; }
+  .subsection:last-child { margin-bottom: 0; }
+  .subsection-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #2e6b3e;
+    letter-spacing: 0.05em;
+    border-left: 3px solid #5aaa5c;
+    padding-left: 8px;
+    margin-bottom: 10px;
+  }
+  .section-header.apple ~ .section-body .subsection-title { color: #c0392b; border-color: #e74c3c; }
+  .section-header.fan   ~ .section-body .subsection-title { color: #2980b9; border-color: #3498db; }
+
+  /* 商品 grid */
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (min-width: 640px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 960px) {
+    .product-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* 商品卡片 */
+  .product-card {
+    border: 1.5px solid #e0eee3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .product-card.has-qty {
+    border-color: #5aaa5c;
+    box-shadow: 0 0 0 2px #5aaa5c44;
+  }
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    background: #e8f5ea;
+  }
+  .product-info { padding: 8px 8px 10px; }
+  .product-name { font-size: 0.78rem; font-weight: 600; color: #222; margin-bottom: 3px; line-height: 1.3; min-height: 2.2em; }
+  .product-price { font-size: 0.85rem; font-weight: 700; color: #c0392b; margin-bottom: 8px; }
+
+  /* 飛機標籤 */
+  .badge-plane {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: #2980b9;
+    color: #fff;
+    font-size: 0.68rem;
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* 數量控制 */
+  .qty-control { display: flex; align-items: center; gap: 6px; }
+  .qty-btn {
+    width: 28px; height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: #2e6b3e;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .qty-btn:hover { background: #1a4a28; }
+  .qty-btn.minus { background: #aaa; }
+  .qty-btn.minus:hover { background: #888; }
+  .qty-display {
+    min-width: 24px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2e6b3e;
+  }
+
+  /* 浮動底欄 */
+  .float-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #2e6b3e;
+    color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -3px 12px rgba(0,0,0,0.2);
+    z-index: 100;
+    transition: transform 0.25s;
+  }
+  .float-bar.hidden { transform: translateY(100%); }
+  .float-bar-info { font-size: 0.9rem; }
+  .float-bar-info .total-amount { font-size: 1.15rem; font-weight: 700; }
+  .checkout-btn {
+    background: #f5f9f1;
+    color: #2e6b3e;
+    border: none;
+    border-radius: 24px;
+    padding: 10px 22px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .checkout-btn:hover { background: #d4edda; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 32px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @media (min-width: 540px) {
+    .modal-overlay { align-items: center; }
+    .modal { border-radius: 16px; margin: 16px; }
+  }
+  .modal h2 { font-size: 1.1rem; color: #2e6b3e; margin-bottom: 16px; font-weight: 700; }
+  .modal label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: #555; }
+  .modal input, .modal textarea {
+    width: 100%;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    font-family: inherit;
+  }
+  .modal input:focus, .modal textarea:focus { border-color: #5aaa5c; outline: none; }
+  .modal textarea { resize: vertical; min-height: 70px; }
+  .order-summary {
+    background: #f5f9f1;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  .order-summary .item-line { display: flex; justify-content: space-between; }
+  .order-summary .total-line {
+    border-top: 1.5px solid #c8e6c9;
+    margin-top: 8px;
+    padding-top: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #2e6b3e;
+    display: flex;
+    justify-content: space-between;
+  }
+  .modal-btns { display: flex; gap: 10px; margin-top: 4px; }
+  .btn-cancel {
+    flex: 1;
+    padding: 12px;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .btn-submit {
+    flex: 2;
+    padding: 12px;
+    border: none;
+    background: #2e6b3e;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-submit:hover { background: #1a4a28; }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* 截止 badge */
+  .deadline-msg {
+    background: #7f1d1d;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  /* 成功頁面 */
+  .success-page {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #f5f9f1;
+    z-index: 300;
+    overflow-y: auto;
+    padding: 32px 20px;
+  }
+  .success-page.show { display: block; }
+  .success-icon { text-align: center; font-size: 4rem; margin-bottom: 12px; }
+  .success-page h2 { text-align: center; color: #2e6b3e; font-size: 1.3rem; margin-bottom: 8px; }
+  .success-page p { text-align: center; color: #555; font-size: 0.9rem; margin-bottom: 24px; }
+  .success-summary {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    border: 1.5px solid #c8e6c9;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  .copy-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: #5aaa5c;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .copy-btn:hover { background: #2e6b3e; }
+  .back-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #2e6b3e;
+    border: 1.5px solid #5aaa5c;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  /* Apple section qty btn */
+  .apple-section .qty-btn { background: #c0392b; }
+  .apple-section .qty-btn:hover { background: #962d22; }
+  .apple-section .qty-display { color: #c0392b; }
+  .apple-section .product-card.has-qty { border-color: #e74c3c; box-shadow: 0 0 0 2px #e74c3c44; }
+
+  .fan-section .qty-btn { background: #2980b9; }
+  .fan-section .qty-btn:hover { background: #1a5f8c; }
+  .fan-section .qty-display { color: #2980b9; }
+  .fan-section .product-card.has-qty { border-color: #3498db; box-shadow: 0 0 0 2px #3498db44; }
+</style>
+</head>
+<body>
+
+<div class="top-header">
+  <h1>🐱 幾隻貓團購 0701</h1>
+  <p>藻作物 × 青森蘋果汁 × 冷製手持扇</p>
+</div>
+
+<div class="countdown-bar" id="countdownBar">
+  距結單還有 <span id="countdownText">計算中...</span>
+</div>
+
+<div class="free-shipping">✨ 免運費</div>
+
+<!-- ========== 藻作物 Section ========== -->
+<div class="section">
+  <div class="section-header algae">🌿 藻作物</div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <div class="subsection-title">海藻系列</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a01">
+          <img class="product-img" src="images/a01.avif" alt="六色海藻" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">六色海藻</div>
+            <div class="product-price">$329</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a01',-1)">−</button>
+              <span class="qty-display" id="qty-a01">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a01',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a02">
+          <img class="product-img" src="images/a02.avif" alt="海帶芽湯（青蔥）" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">海帶芽湯（青蔥）</div>
+            <div class="product-price">$230</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a02',-1)">−</button>
+              <span class="qty-display" id="qty-a02">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a02',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a03">
+          <img class="product-img" src="images/a03.avif" alt="海帶芽湯（蔬菜）" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">海帶芽湯（蔬菜）</div>
+            <div class="product-price">$230</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a03',-1)">−</button>
+              <span class="qty-display" id="qty-a03">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a03',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">調味料</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a04">
+          <img class="product-img" src="images/a04.avif" alt="昆布鹽" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">昆布鹽</div>
+            <div class="product-price">$220</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a04',-1)">−</button>
+              <span class="qty-display" id="qty-a04">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a04',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a05">
+          <img class="product-img" src="images/a05.avif" alt="椎茸昆布鹽" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">椎茸昆布鹽</div>
+            <div class="product-price">$220</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a05',-1)">−</button>
+              <span class="qty-display" id="qty-a05">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a05',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">醬料</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a06">
+          <img class="product-img" src="images/a06.avif" alt="焙煎胡麻醬" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">焙煎胡麻醬</div>
+            <div class="product-price">$160</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a06',-1)">−</button>
+              <span class="qty-display" id="qty-a06">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a06',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a07">
+          <img class="product-img" src="images/a07.avif" alt="胡麻和風醬" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">胡麻和風醬</div>
+            <div class="product-price">$160</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a07',-1)">−</button>
+              <span class="qty-display" id="qty-a07">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a07',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a08">
+          <img class="product-img" src="images/a08.avif" alt="柚子和風醬" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">柚子和風醬</div>
+            <div class="product-price">$160</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a08',-1)">−</button>
+              <span class="qty-display" id="qty-a08">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a08',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a09">
+          <img class="product-img" src="images/a09.avif" alt="昆布佃煮海苔醬" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">昆布佃煮海苔醬</div>
+            <div class="product-price">$160</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a09',-1)">−</button>
+              <span class="qty-display" id="qty-a09">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a09',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">高湯包</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a10">
+          <img class="product-img" src="images/a10.avif" alt="昆布椎茸高湯包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">昆布椎茸高湯包</div>
+            <div class="product-price">$360</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a10',-1)">−</button>
+              <span class="qty-display" id="qty-a10">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a10',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a11">
+          <img class="product-img" src="images/a11.avif" alt="番茄昆布高湯包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">番茄昆布高湯包</div>
+            <div class="product-price">$360</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a11',-1)">−</button>
+              <span class="qty-display" id="qty-a11">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a11',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">隨身包</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a12">
+          <img class="product-img" src="images/a12.avif" alt="藻安！海藻隨身包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">藻安！海藻隨身包</div>
+            <div class="product-price">$360</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a12',-1)">−</button>
+              <span class="qty-display" id="qty-a12">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a12',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a13">
+          <img class="product-img" src="images/a13.avif" alt="焙煎胡麻隨身包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">焙煎胡麻隨身包</div>
+            <div class="product-price">$130</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a13',-1)">−</button>
+              <span class="qty-display" id="qty-a13">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a13',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a14">
+          <img class="product-img" src="images/a14.avif" alt="胡麻和風隨身包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">胡麻和風隨身包</div>
+            <div class="product-price">$130</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a14',-1)">−</button>
+              <span class="qty-display" id="qty-a14">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a14',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a15">
+          <img class="product-img" src="images/a15.avif" alt="柚子和風隨身包" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">柚子和風隨身包</div>
+            <div class="product-price">$130</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a15',-1)">−</button>
+              <span class="qty-display" id="qty-a15">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a15',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">晰穀雜糧</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a16">
+          <img class="product-img" src="images/a16.avif" alt="晰穀三色藜麥" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">晰穀三色藜麥</div>
+            <div class="product-price">$112</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a16',-1)">−</button>
+              <span class="qty-display" id="qty-a16">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a16',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a17">
+          <img class="product-img" src="images/a17.avif" alt="晰穀鷹嘴豆/埃及豆(雪蓮子)" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">晰穀鷹嘴豆/埃及豆(雪蓮子)</div>
+            <div class="product-price">$93</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a17',-1)">−</button>
+              <span class="qty-display" id="qty-a17">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a17',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a18">
+          <img class="product-img" src="images/a18.avif" alt="晰穀奇亞籽" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">晰穀奇亞籽</div>
+            <div class="product-price">$167</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a18',-1)">−</button>
+              <span class="qty-display" id="qty-a18">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a18',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">晰穀配方盒裝</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a19">
+          <img class="product-img" src="images/a19.avif" alt="美人配方盒裝" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">美人配方盒裝</div>
+            <div class="product-price">$210</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a19',-1)">−</button>
+              <span class="qty-display" id="qty-a19">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a19',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a20">
+          <img class="product-img" src="images/a20.avif" alt="養生配方盒裝" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">養生配方盒裝</div>
+            <div class="product-price">$210</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a20',-1)">−</button>
+              <span class="qty-display" id="qty-a20">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a20',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a21">
+          <img class="product-img" src="images/a21.avif" alt="活力配方盒裝" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">活力配方盒裝</div>
+            <div class="product-price">$210</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a21',-1)">−</button>
+              <span class="qty-display" id="qty-a21">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a21',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a22">
+          <img class="product-img" src="images/a22.avif" alt="經典配方盒裝" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">經典配方盒裝</div>
+            <div class="product-price">$210</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a22',-1)">−</button>
+              <span class="qty-display" id="qty-a22">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a22',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">晰穀配方家庭號</div>
+      <div class="product-grid">
+        <div class="product-card" id="card-a23">
+          <img class="product-img" src="images/a23.avif" alt="經典配方 家庭號" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">經典配方 家庭號</div>
+            <div class="product-price">$289</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a23',-1)">−</button>
+              <span class="qty-display" id="qty-a23">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a23',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a24">
+          <img class="product-img" src="images/a24.avif" alt="美人配方 家庭號" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">美人配方 家庭號</div>
+            <div class="product-price">$289</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a24',-1)">−</button>
+              <span class="qty-display" id="qty-a24">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a24',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a25">
+          <img class="product-img" src="images/a25.avif" alt="養生配方 家庭號" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">養生配方 家庭號</div>
+            <div class="product-price">$289</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a25',-1)">−</button>
+              <span class="qty-display" id="qty-a25">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a25',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" id="card-a26">
+          <img class="product-img" src="images/a26.avif" alt="活力配方 家庭號" loading="lazy">
+          <div class="product-info">
+            <div class="product-name">活力配方 家庭號</div>
+            <div class="product-price">$289</div>
+            <div class="qty-control">
+              <button class="qty-btn minus" onclick="changeQty('a26',-1)">−</button>
+              <span class="qty-display" id="qty-a26">0</span>
+              <button class="qty-btn plus" onclick="changeQty('a26',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== 青森蘋果汁 Section ========== -->
+<div class="section apple-section">
+  <div class="section-header apple">🍎 日本青森純榨蘋果汁</div>
+  <div class="section-body">
+    <div class="product-grid">
+      <div class="product-card" id="card-b01">
+        <img class="product-img" src="images/b01.avif" alt="日本青森純榨蘋果汁 12入" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">日本青森純榨蘋果汁 12入</div>
+          <div class="product-price">$2,299</div>
+          <div class="qty-control">
+            <button class="qty-btn minus" onclick="changeQty('b01',-1)">−</button>
+            <span class="qty-display" id="qty-b01">0</span>
+            <button class="qty-btn plus" onclick="changeQty('b01',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" id="card-b02">
+        <img class="product-img" src="images/b02.avif" alt="日本青森純榨蘋果汁 6入" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">日本青森純榨蘋果汁 6入</div>
+          <div class="product-price">$1,259</div>
+          <div class="qty-control">
+            <button class="qty-btn minus" onclick="changeQty('b02',-1)">−</button>
+            <span class="qty-display" id="qty-b02">0</span>
+            <button class="qty-btn plus" onclick="changeQty('b02',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 冷製手持扇 Section ========== -->
+<div class="section fan-section">
+  <div class="section-header fan">❄️ 冷製手持扇</div>
+  <div class="section-body">
+    <div class="product-grid">
+      <div class="product-card" id="card-c01" style="max-width: 220px;">
+        <span class="badge-plane">✈️ 可攜帶上飛機</span>
+        <img class="product-img" src="images/c01.avif" alt="WONDER 超輕量製冷手持高速扇" loading="lazy">
+        <div class="product-info">
+          <div class="product-name">WONDER 超輕量製冷手持高速扇 WH-FU37</div>
+          <div class="product-price">$499</div>
+          <div class="qty-control">
+            <button class="qty-btn minus" onclick="changeQty('c01',-1)">−</button>
+            <span class="qty-display" id="qty-c01">0</span>
+            <button class="qty-btn plus" onclick="changeQty('c01',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 浮動底欄 -->
+<div class="float-bar hidden" id="floatBar">
+  <div class="float-bar-info">
+    <div>已選 <strong id="totalQty">0</strong> 件</div>
+    <div class="total-amount">$<span id="totalAmount">0</span></div>
+  </div>
+  <button class="checkout-btn" onclick="openCheckout()">前往結單 →</button>
+</div>
+
+<!-- 結單 Modal -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <h2>📋 確認訂單</h2>
+    <label for="inputName">姓名 <span style="color:#c0392b">*</span></label>
+    <input type="text" id="inputName" placeholder="請輸入您的姓名">
+    <label for="inputNote">備註（選填）</label>
+    <textarea id="inputNote" placeholder="如有特殊需求請填寫..."></textarea>
+    <div class="order-summary" id="orderSummary"></div>
+    <div id="deadlineMsgModal" class="deadline-msg" style="display:none;border-radius:8px;margin-bottom:12px;">已截止收單，無法送出</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeCheckout()">取消</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitOrder()">確認送出</button>
+    </div>
+  </div>
+</div>
+
+<!-- 成功頁面 -->
+<div class="success-page" id="successPage">
+  <div class="success-icon">🎉</div>
+  <h2>訂單已送出！</h2>
+  <p>感謝您的訂購，匯款資訊將另行通知</p>
+  <div class="success-summary" id="successSummary"></div>
+  <button class="copy-btn" onclick="copySummary()">複製訂購摘要</button>
+  <button class="back-btn" onclick="backToShop()">← 返回繼續逛</button>
+</div>
+
+<script>
+const DEADLINE = new Date('2026-07-01T17:00:00+08:00');
+const GAS_URL = 'GAS_WEBAPP_URL_HERE';
+
+const PRODUCTS = [
+  { id: 'a01', name: '六色海藻', price: 329 },
+  { id: 'a02', name: '海帶芽湯（青蔥）', price: 230 },
+  { id: 'a03', name: '海帶芽湯（蔬菜）', price: 230 },
+  { id: 'a04', name: '昆布鹽', price: 220 },
+  { id: 'a05', name: '椎茸昆布鹽', price: 220 },
+  { id: 'a06', name: '焙煎胡麻醬', price: 160 },
+  { id: 'a07', name: '胡麻和風醬', price: 160 },
+  { id: 'a08', name: '柚子和風醬', price: 160 },
+  { id: 'a09', name: '昆布佃煮海苔醬', price: 160 },
+  { id: 'a10', name: '昆布椎茸高湯包', price: 360 },
+  { id: 'a11', name: '番茄昆布高湯包', price: 360 },
+  { id: 'a12', name: '藻安！海藻隨身包', price: 360 },
+  { id: 'a13', name: '焙煎胡麻隨身包', price: 130 },
+  { id: 'a14', name: '胡麻和風隨身包', price: 130 },
+  { id: 'a15', name: '柚子和風隨身包', price: 130 },
+  { id: 'a16', name: '晰穀三色藜麥', price: 112 },
+  { id: 'a17', name: '晰穀鷹嘴豆/埃及豆(雪蓮子)', price: 93 },
+  { id: 'a18', name: '晰穀奇亞籽', price: 167 },
+  { id: 'a19', name: '美人配方盒裝', price: 210 },
+  { id: 'a20', name: '養生配方盒裝', price: 210 },
+  { id: 'a21', name: '活力配方盒裝', price: 210 },
+  { id: 'a22', name: '經典配方盒裝', price: 210 },
+  { id: 'a23', name: '經典配方 家庭號', price: 289 },
+  { id: 'a24', name: '美人配方 家庭號', price: 289 },
+  { id: 'a25', name: '養生配方 家庭號', price: 289 },
+  { id: 'a26', name: '活力配方 家庭號', price: 289 },
+  { id: 'b01', name: '日本青森純榨蘋果汁 12入', price: 2299 },
+  { id: 'b02', name: '日本青森純榨蘋果汁 6入', price: 1259 },
+  { id: 'c01', name: 'WONDER 超輕量製冷手持高速扇 WH-FU37', price: 499 },
+];
+
+const qty = {};
+PRODUCTS.forEach(p => qty[p.id] = 0);
+
+function isDeadlinePassed() {
+  return new Date() >= DEADLINE;
+}
+
+function changeQty(id, delta) {
+  if (isDeadlinePassed()) return;
+  qty[id] = Math.max(0, qty[id] + delta);
+  document.getElementById('qty-' + id).textContent = qty[id];
+  const card = document.getElementById('card-' + id);
+  if (qty[id] > 0) card.classList.add('has-qty');
+  else card.classList.remove('has-qty');
+  updateFloatBar();
+}
+
+function getTotalQty() {
+  return PRODUCTS.reduce((sum, p) => sum + qty[p.id], 0);
+}
+
+function getTotalAmount() {
+  return PRODUCTS.reduce((sum, p) => sum + qty[p.id] * p.price, 0);
+}
+
+function updateFloatBar() {
+  const tq = getTotalQty();
+  const ta = getTotalAmount();
+  document.getElementById('totalQty').textContent = tq;
+  document.getElementById('totalAmount').textContent = ta.toLocaleString();
+  const bar = document.getElementById('floatBar');
+  if (tq > 0) bar.classList.remove('hidden');
+  else bar.classList.add('hidden');
+}
+
+function openCheckout() {
+  // 建立訂單摘要
+  const items = PRODUCTS.filter(p => qty[p.id] > 0);
+  let html = '';
+  items.forEach(p => {
+    html += `<div class="item-line"><span>${p.name} × ${qty[p.id]}</span><span>$${(p.price * qty[p.id]).toLocaleString()}</span></div>`;
+  });
+  html += `<div class="total-line"><span>總金額</span><span>$${getTotalAmount().toLocaleString()}</span></div>`;
+  document.getElementById('orderSummary').innerHTML = html;
+
+  // 截止判斷
+  const ended = isDeadlinePassed();
+  document.getElementById('submitBtn').disabled = ended;
+  document.getElementById('deadlineMsgModal').style.display = ended ? 'block' : 'none';
+
+  document.getElementById('checkoutModal').classList.add('show');
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('show');
+}
+
+// 點擊 overlay 關閉
+document.getElementById('checkoutModal').addEventListener('click', function(e) {
+  if (e.target === this) closeCheckout();
+});
+
+function getSummaryText() {
+  const items = PRODUCTS.filter(p => qty[p.id] > 0);
+  return items.map(p => `${p.name}×${qty[p.id]}`).join('、');
+}
+
+async function submitOrder() {
+  const name = document.getElementById('inputName').value.trim();
+  if (!name) {
+    document.getElementById('inputName').focus();
+    document.getElementById('inputName').style.borderColor = '#e74c3c';
+    return;
+  }
+  document.getElementById('inputName').style.borderColor = '#ccc';
+
+  const note = document.getElementById('inputNote').value.trim();
+  const summary = getSummaryText();
+  const total = getTotalAmount();
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '送出中...';
+
+  const params = new URLSearchParams();
+  params.append('name', name);
+  params.append('summary', summary);
+  params.append('total', total);
+  params.append('note', note);
+  PRODUCTS.forEach(p => {
+    if (qty[p.id] > 0) params.append(p.id, qty[p.id]);
+  });
+
+  try {
+    await fetch(GAS_URL, { method: 'POST', body: params, mode: 'no-cors' });
+  } catch (e) {
+    // no-cors 下 fetch 回傳 opaque response，正常
+  }
+
+  // 顯示成功頁面
+  closeCheckout();
+  const items = PRODUCTS.filter(p => qty[p.id] > 0);
+  let successText = `【幾隻貓團購 0701】訂購摘要\n`;
+  successText += `姓名：${name}\n`;
+  successText += `────────────────\n`;
+  items.forEach(p => {
+    successText += `${p.name} × ${qty[p.id]} = $${(p.price * qty[p.id]).toLocaleString()}\n`;
+  });
+  successText += `────────────────\n`;
+  successText += `總金額：$${total.toLocaleString()}\n`;
+  if (note) successText += `備註：${note}\n`;
+
+  document.getElementById('successSummary').textContent = successText;
+  document.getElementById('successPage').classList.add('show');
+}
+
+function copySummary() {
+  const text = document.getElementById('successSummary').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製訂購摘要', 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製訂購摘要', 2000);
+  });
+}
+
+function backToShop() {
+  document.getElementById('successPage').classList.remove('show');
+}
+
+// 倒數計時
+function updateCountdown() {
+  const now = new Date();
+  const diff = DEADLINE - now;
+  const bar = document.getElementById('countdownBar');
+
+  if (diff <= 0) {
+    bar.classList.add('ended');
+    document.getElementById('countdownText').textContent = '已截止';
+    // 隱藏所有送出按鈕
+    document.querySelectorAll('.qty-btn').forEach(b => b.disabled = true);
+    document.getElementById('floatBar').classList.add('hidden');
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  let txt = '';
+  if (days > 0) txt += `${days} 天 `;
+  txt += `${hours} 時 ${mins} 分`;
+  document.getElementById('countdownText').textContent = txt;
+}
+
+updateCountdown();
+setInterval(updateCountdown, 30000);
+</script>
+</body>
+</html>
